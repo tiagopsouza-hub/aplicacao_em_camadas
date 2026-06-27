@@ -1,4 +1,5 @@
 import userRepository from "../repositories/userRepository.js";
+import bcrypt from "bcrypt";
 
 const userService = {
     recuperarUsuarios: async () => {
@@ -23,7 +24,7 @@ const userService = {
     },
     recuperarUsuariosPorEmail: async (email) => {
         try {
-            const resultado = await userRepository.selecionarPorEmail();
+            const resultado = await userRepository.selecionarPorEmail(email);
             return resultado;
         }
         catch (error) {
@@ -61,6 +62,10 @@ const userService = {
             throw new Error("Erro ao atualizar usuários: " + error.message)
         };
     },
+    hashedPassword: async (password) => {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        return hashedPassword;
+    }
 };
 
 export default userService;

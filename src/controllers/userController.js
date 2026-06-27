@@ -68,33 +68,23 @@ const userController = {
     criar: async (req, res) => {
         const { name, email, password } = req.body;
 
-        const user = new User(name, email, password);
+        const hashedPassword = await userService.hashedPassword(password);
+
+        const user = new User(name, email, hashedPassword);
 
         try {
             // validação simples para garantir que name e email não estejam vazios
             if (name.trim() === "" || email.trim() === "" || password.trim() === "") {
-                return res.status(400).json({
-                    message: "Nome, email e senha são obrigatórios"
-                });
+                return res.status(400).json({message: "Nome, email e senha são obrigatórios"});
             }
-
 
             const resultado = await userService.criarUsuario(user);
 
-
-            res.status(201).json({
-                message: "Usuário criado com sucesso",
-                data: {
-                    id: resultado.insertId
-                }
-            });
+            res.status(201).json({message: "Usuário criado com sucesso", data: {id: resultado.insertId}});
 
         } catch (error) {
             console.error(error);
-            res.status(500).json({
-                message: "Erro ao criar usuário",
-                error: error.message
-            });
+            res.status(500).json({message: "Erro ao criar usuário", error: error.message});
         }
     },
     atualizar: async (req, res) => {
@@ -106,9 +96,7 @@ const userController = {
         try {
             // validação simples para garantir que name e email não estejam vazios
             if (name.trim() === "" || email.trim() === "" || password.trim() === "") {
-                return res.status(400).json({
-                    message: "Nome, email e senha são obrigatórios"
-                });
+                return res.status(400).json({message: "Nome, email e senha são obrigatórios"});
             }
 
 
